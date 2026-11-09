@@ -10,4 +10,4 @@
 - [x] copy_group_access only shows the change, behind requireAdmin; applying is left to apply_change (verify's judge: two high findings)
 - [x] The lint fails any tool other than apply-change that calls patchSettings at all, so a tool can't show and apply in one call
 - [x] The settings-shape test skips where the recorded settings aren't in git, so CI can pass
-- [ ] check_baseline: read-only, lists in plain words every setting that differs from client/security-baseline.json; works with a read-only token and changes nothing
+- [x] check_baseline: read-only, lists in plain words every setting that differs from client/security-baseline.json; works with a read-only token and changes nothing
