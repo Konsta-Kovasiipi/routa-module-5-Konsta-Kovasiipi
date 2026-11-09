@@ -9,3 +9,4 @@
 - [x] set_session_length only shows the change: every change is shown before it is applied
 - [ ] copy_group_access only shows the change, behind requireAdmin; applying is left to apply_change (verify's judge: two high findings)
 - [ ] The lint fails any tool other than apply-change that calls patchSettings at all, so a tool can't show and apply in one call
+- [x] The settings-shape test skips where the recorded settings aren't in git, so CI can pass
