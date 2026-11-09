@@ -57,10 +57,17 @@ test("a read-only token can't set the session length", async () => {
   assert.equal(patches.length, 0);
 });
 
-test("copy_group_access shows the change, then applies it", async () => {
+test("copy_group_access only shows the change; apply_change applies it", async () => {
   const { patches } = fakePlatform();
-  assert.match(await copyGroupAccessTool.handler({ from: "staff", to: "contractors" }), /contractors gains documents/);
+  const shown = await copyGroupAccessTool.handler({ from: "staff", to: "contractors" });
+  assert.match(shown, /contractors gains documents/);
   assert.equal(patches.length, 0);
-  await copyGroupAccessTool.handler({ from: "staff", to: "contractors", confirm: true });
-  assert.equal(patches.length, 1);
+  await applyChangeTool.handler({ id: idOf(shown) });
+  assert.deepEqual(patches, [{ type: "access", group: "contractors", app: "documents", allowed: true }]);
+});
+
+test("a read-only token can't copy group access", async () => {
+  const { patches } = fakePlatform("read");
+  await assert.rejects(copyGroupAccessTool.handler({ from: "staff", to: "contractors" }), /read-only/);
+  assert.equal(patches.length, 0);
 });
