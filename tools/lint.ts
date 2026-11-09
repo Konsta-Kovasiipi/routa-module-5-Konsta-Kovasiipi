@@ -1,6 +1,5 @@
-// Lint: every tool that calls patchSettings must also call showChange,
-// so a change is shown before it is applied. apply-change.ts is exempt:
-// it applies a change that was already shown by preview-change.
+// Lint: only apply-change.ts may call patchSettings, so a tool can't show and apply a change in one call.
+// apply-change.ts applies a change that was already shown by preview-change.
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -11,13 +10,10 @@ const calls = (source: string, name: string) => new RegExp(`\\b${name}\\s*\\(`).
 
 const failures = readdirSync(TOOLS)
   .filter((file) => file.endsWith(".ts") && !EXEMPT.has(file))
-  .filter((file) => {
-    const source = readFileSync(join(TOOLS, file), "utf8");
-    return calls(source, "patchSettings") && !calls(source, "showChange");
-  });
+  .filter((file) => calls(readFileSync(join(TOOLS, file), "utf8"), "patchSettings"));
 
 for (const file of failures) {
-  console.error(`${TOOLS}/${file}: calls patchSettings without calling showChange`);
+  console.error(`${TOOLS}/${file}: calls patchSettings; only apply-change.ts may apply a change`);
 }
 if (failures.length > 0) process.exit(1);
 console.log("lint: ok");
